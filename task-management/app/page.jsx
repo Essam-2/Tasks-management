@@ -1,14 +1,38 @@
 import React from "react";
 import TaskCard from "./(components)/TaskCard";
 
-const Dashboard = () => {
+const getTasks = async () => {
+  try {
+    const res = await fetch("http://localhost:3000/api/Tasks", {
+      cache: "no-store",
+    });
+    return res.json();
+  } catch (error) {
+    console.log("Failed to get tasks");
+  }
+};
+
+const Dashboard = async () => {
+  const { tasks } = await getTasks();
+
+  const uniqueCategories = [...new Set(tasks?.map(({ category }) => category))];
+
   return (
     <div className="p-5 ">
-      <div className="lg:grid grid-cols-2 xl:grid-cols-4">
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
-        <TaskCard />
+      <div>
+        {tasks &&
+          uniqueCategories?.map((uniqueCategory, categoryIndex) => (
+            <div key={categoryIndex} className="mb-4">
+              <h2>{uniqueCategory}</h2>
+              <div className="lg:grid grid-cols-2 xl:grid-cols-4">
+                {tasks
+                  .filter((task) => task.category === uniqueCategory)
+                  .map((filteredTasked, _index) => (
+                    <TaskCard id={_index} key={_index} task={filteredTasked} />
+                  ))}
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   );
