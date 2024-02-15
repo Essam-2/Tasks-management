@@ -32,6 +32,7 @@ const taskSchema = new Schema(
     active: {
       type: Boolean,
       required: true,
+      default: true,
     },
   },
   {
@@ -39,6 +40,6 @@ const taskSchema = new Schema(
   }
 );
 
-const Task = mongoose.model.Task || mongoose.model("Task", taskSchema);
+const TaskModel = mongoose.models.Task || mongoose.model("Task", taskSchema);
 
-export default Task;
+export default TaskModel;
